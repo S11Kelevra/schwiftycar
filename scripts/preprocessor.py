@@ -184,5 +184,5 @@ def main():
     augment(args.set_name, args.equalize)
     logger.debug("Process End")
 
-if __name__ == '__main__': # main if
+if __name__ == '__main__': # main if check
     main()
