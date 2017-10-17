@@ -70,7 +70,7 @@ def process_image(path, name, command, op_todo):
     aug_images = []         # empty list for augmented images
 
     for ops in op_todo:                                 # for each operation set in op_todo (line 97)
-        new_command = command                           # new_command = int(entry[-1]) ?? dafuq?
+        new_command = command                           # new_command = int(entry[-1]) (int of last element of entry)
         for ind in range(len(image_paths)):             # for each image in the directory
             img_orig = cv2.imread(image_paths[ind], 1)  # loads color image into img_original
             new_image = img_orig                        # copy image to new_image
@@ -88,7 +88,7 @@ def process_image(path, name, command, op_todo):
             output_prepend+name[1],
             new_command])
 
-    return aug_images                   # return the appended list of augmented images and new drive commans
+    return aug_images                   # return the appended list of augmented images and new drive commands
 
 def augment(set_name, equalize=False):
     '''
@@ -146,7 +146,7 @@ def augment(set_name, equalize=False):
             new_entries = process_image(                    # new entries created from proc_img function
                 [cam_1_path, cam_2_path],                   # path = cams, name = entry[1/0], command = int(entry[-1])
                 [entry[0],entry[1]],                        # op_todo
-                int(entry[-1]),
+                int(entry[-1]),                             # last element in entry
                 op_todo)
             writer = csv.writer(io_csv, delimiter=',')      # writer set with dlm = ','
             for new_entry in new_entries:                   # for each value in entry
