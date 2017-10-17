@@ -42,19 +42,19 @@ def model(load, shape, classes_num, tr_model=None):
     )
     return model
 
-def get_X_y(data_files):
+def get_X_y(data_files):        # currently empty
     '''
     Read the csv files and generate X/y pairs.
     '''
     pass
 
-def _generator(batch_size, classes, X, y):
+def _generator(batch_size, classes, X, y):      # currently empty
     '''
     Generate batches for training
     '''
     pass
 
-def train(conf, model, train_name=None):
+def train(conf, model, train_name=None):    # currently not called anywhere
     '''
     Load the network and data, fit the model, save it
     '''
@@ -95,4 +95,3 @@ def train(conf, model, train_name=None):
         epochs=conf['epochs']
     )
     net.save()
-    
