@@ -1,5 +1,5 @@
 '''
-Checks stagign folder for new datasets.
+Checks staging folder for new datasets.
 Downloads, unpacks, and adds them to processor queue
 '''
 
@@ -66,7 +66,7 @@ def update_process_queue(meta_file, set_name):
 def download_and_unpack(blob, filename):
     '''
     Downloads files from the staging folder, unpacks them, then removes
-    originla files from the staging directory. Adds files onto a database
+    original files from the staging directory. Adds files onto a database
     for preprocessing step to work with
     '''
     logger.info("Downloading %s..." % filename)
