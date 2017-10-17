@@ -53,7 +53,7 @@ def equalize(image):
 
 def interpolate(set_name):
     '''
-    Increase data set by labeling the inbetween frames
+    Increase data set by labeling the in between frames
     '''
     pre_path = os.path.join(config.pre_path, set_name)
     pre_label_path = os.path.join(set_name, set_name+'.csv')

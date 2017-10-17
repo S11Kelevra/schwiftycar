@@ -15,15 +15,15 @@ import argparse
 import logging
 sys.path.append(dirname(dirname(os.path.realpath(__file__))))
 
-import numpy as np
+import numpy as np      # needed?
 import cv2
-import pandas as pd
+import pandas as pd     # needed?
 
 from robocar42 import util
 from robocar42 import config
 from robocar42 import preprocess
 
-logger = util.configure_log('preprocess')
+logger = util.configure_log('preprocess') # set the logger name for this script
 
 op_list = [
     ('darken', preprocess.darken),
@@ -39,17 +39,17 @@ def build_parser():
     '''
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        '-sim_cutoff',
+        '-sim_cutoff',                                      # argument for similarity threshold, type=float default 0.1
         type=float,
         help="Image similarity threshold. Default: 0.1",
         default=0.1)
     parser.add_argument(
-        '-equalize',
+        '-equalize',                                        # choose to apply equalize histogram on images, default = no
         action='store_true',
         default=False,
         help='Apply equalize histogram on images, Default: False'
         )
-    parser.add_argument(
+    parser.add_argument(                                    # name of data set to preprocess
         'set_name',
         type=str,
         help="Name of data set"
@@ -86,11 +86,14 @@ def process_image(path, name, command, op_todo):
     return aug_images
 
 def augment(set_name, equalize=False):
-    data_path = os.path.join(config.data_path, set_name)
-    label_path = os.path.join(set_name, set_name+'.csv')
-    label_path = os.path.join(config.data_path, label_path)
+    '''
 
-    cam_1_path = os.path.join(data_path, '1')
+    '''
+    data_path = os.path.join(config.data_path, set_name)        # data_path = ROOT_DIR/data_sets/set_name
+    label_path = os.path.join(set_name, set_name+'.csv')        # label_path = set_name/set_name.csv
+    label_path = os.path.join(config.data_path, label_path)     # label_path = ROOT_DIR/data_sets/set_name/set_name/set_name.csv
+
+    cam_1_path = os.path.join(data_path, '1')                   # cam1or2 = ROOT_DIR/data_sets/set_name/1or2
     cam_2_path = os.path.join(data_path, '2')
 
     op_todo = [
@@ -101,28 +104,27 @@ def augment(set_name, equalize=False):
         ([op_list[1],op_list[2]])
     ]
 
-    with open(label_path, 'r') as in_csv:
-        for line in in_csv:
-            if re.search(r"(flip|autocont|equalize|darken|brighten)", line):
+    with open(label_path, 'r') as in_csv:                                   # open csv file in read
+        for line in in_csv:                                                 # Line by line
+            if re.search(r"(flip|autocont|equalize|darken|brighten)", line):# ???
                 util.progress_bar(1, 1)
                 return
 
-    #equalize images
-    if equalize:
-        with open(label_path, 'r') as in_csv:
-            reader = csv.reader(in_csv, delimiter=',')
-            attribute = next(reader, None)
-            entries = list(reader)
-            for entry in entries:
-                img_1_path = os.path.join(cam_1_path, entry[0])
+    if equalize:                                                            # equalize images (default false)
+        with open(label_path, 'r') as in_csv:                               # open csv file in read
+            reader = csv.reader(in_csv, delimiter=',')                      # read in data with ',' dln
+            attribute = next(reader, None)                                  # ??? needed?
+            entries = list(reader)                                          # reader broken into entries list
+            for entry in entries:                                           # for each element in entry
+                img_1_path = os.path.join(cam_1_path, entry[0])             # img_x_path = ROOT_DIR/data_sets/set_name/x/entry[x]
                 img_2_path = os.path.join(cam_2_path, entry[1])
-                cam_1_img = preprocess.equalize(cv2.imread(img_1_path))
-                cam_2_img = preprocess.equalize(cv2.imread(img_2_path))
-                cv2.imwrite(filename=img_1_path,img=cam_1_img)
-                cv2.imwrite(filename=img_2_path,img=cam_2_img)
+                cam_1_img = preprocess.equalize(cv2.imread(img_1_path))     # cam_x_img equalized (contrast increase)
+                cam_2_img = preprocess.equalize(cv2.imread(img_2_path))     # using cv2 functions
+                cv2.imwrite(filename=img_1_path,img=cam_1_img)              # cv2.imwrite to save boosted image to
+                cv2.imwrite(filename=img_2_path,img=cam_2_img)              # same directory (overwrite?)
 
-    logger.info("Preprocessing images...")
-    with open(label_path, 'a+') as io_csv:
+    logger.info("Preprocessing images...")                                  # Begin log for actual preprocessing
+    with open(label_path, 'a+') as io_csv:                                  # 
         io_csv.seek(0)
         reader = csv.reader(io_csv, delimiter=',')
         attribute = next(reader, None)
@@ -145,36 +147,32 @@ def augment(set_name, equalize=False):
             time.sleep(0.1)
 
 def main():
-    parser = build_parser()
-    args = parser.parse_args()
+    parser = build_parser()             # parses input (similarity threshold, equalize, name of data set)
+    args = parser.parse_args()          # values taken into args
 
-    logger.critical("Process Start")
+    logger.critical("Process Start")                # begin the log
     if not args.set_name:
-        logger.error("ERROR - Invalid set name")
-        exit(0)
+        logger.error("ERROR - Invalid set name")    # logs error if no set by that name
+        exit(0)                                     # exits
 
-    pre_path = os.path.join(config.pre_path, args.set_name)
-    pre_label_path = os.path.join(args.set_name, args.set_name+'.csv')
-    pre_label_path = os.path.join(config.pre_path, pre_label_path)
+    pre_path = os.path.join(config.pre_path, args.set_name)             # pre_path = ROOT_DIR/data_sets/set_name
+    pre_label_path = os.path.join(args.set_name, args.set_name+'.csv')  # pre_label_path = set_name/set_name.csv
+    pre_label_path = os.path.join(config.pre_path, pre_label_path)      # pre_label_path = ROOT_DIR/data_sets/set_name/....?
 
     if not os.path.exists(pre_path):
-        logger.error("ERROR - Unable to find preproc. set: %s" % args.set_name)
-        exit(0)
-    if not os.path.exists(pre_label_path):
-        logger.error("ERROR - Unable to find csv file: %s" % args.set_name)
+        logger.error("ERROR - Unable to find preproc. set: %s" % args.set_name) # if set name doesn't exist log error
+        exit(0)                                                                 # and exit
+    if not os.path.exists(pre_label_path):                                      # if csv file does not exit log error
+        logger.error("ERROR - Unable to find csv file: %s" % args.set_name)     # and exit
         exit(0)
 
-    #interpolations step
-    logger.info("Interpolating Images")
-    entries = preprocess.interpolate(args.set_name)
-    #image similarity detection
-    logger.info("Image Similarity Detection")
+    logger.info("Interpolating Images")                 # interpolations step
+    entries = preprocess.interpolate(args.set_name)     # unused?
+    logger.info("Image Similarity Detection")           # image similarity detection
     entries = preprocess.similarity_detection(args.set_name, args.sim_cutoff)
-    #image augmentation
-    logger.info("Image Augmentation")
+    logger.info("Image Augmentation")                   # image augmentation
     augment(args.set_name, args.equalize)
-
     logger.debug("Process End")
 
-if __name__ == '__main__':
+if __name__ == '__main__': # main if
     main()
