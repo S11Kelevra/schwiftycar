@@ -86,29 +86,29 @@ def concantenate_image(images):
     '''
     Processes images and return normalized/combined single image
     '''
-    images[0] = np.swapaxes(images[0], 1, 0)
+    images[0] = np.swapaxes(images[0], 1, 0)        # swaps the axes in the images (mirror)
     images[1] = np.swapaxes(images[1], 1, 0)
-    aimage = np.concatenate(tuple(images), axis=1)
+    aimage = np.concatenate(tuple(images), axis=1)  # concatenates the images along axis 1
     aimage = cv2.resize(aimage,
                 disp_conf['sdshape'],
-                interpolation=cv2.INTER_AREA)
+                interpolation=cv2.INTER_AREA)       #resizes the image
     aimage = aimage / 255.
     aimage = aimage - 0.5
     return aimage
 
 def auto_drive(images):
     print "auto drive func"
-    if images:
-        prec_image = concantenate_image(images)
-        pred_act = model.predict(np.array([prec_image]))[0]
+    if images:              # if there are images...
+        prec_image = concantenate_image(images)     # returns a concatonated and resized image
+        pred_act = model.predict(np.array([prec_image]))[0]     # creates an array based on prec_image
         logger.info("Lft: %.2f | Fwd: %.2f | Rht: %.2f | Rev: %.2f" %
-            (pred_act[1], pred_act[0], pred_act[2], pred_act[3]))
-        act_i = np.argmax(pred_act)
-        action = act_i if (pred_act[act_i] >= conf_level) else rev_action
+            (pred_act[1], pred_act[0], pred_act[2], pred_act[3]))   # logs the percentage of each action
+        act_i = np.argmax(pred_act)     # returns the index of the maximum values in pred_act
+        action = act_i if (pred_act[act_i] >= conf_level) else rev_action   # sets the action if it is 30+% confident
         if act_i < len(links):
-            rc_car.drive(conv_to_vec(links[action]))
+            rc_car.drive(conv_to_vec(links[action]))    # converts the action to a vector, then executes the action
         return action, True
-    else:
+    else:                   # if there are no images, log and return None/False
         logger.error("Error: no images for prediction")
         return None, False
 
@@ -174,7 +174,7 @@ def drive(auto, set_name, rec_dirs=None, teach=False):
                 auto = False
                 logging.info("Autopilot mode off!")
             keys = []
-            pygame.event.pump()
+            pygame.event.pump()         # internally process pygame event handlers
             if images and auto and drive:
                 logger.debug("Auto drive")
                 drive = False

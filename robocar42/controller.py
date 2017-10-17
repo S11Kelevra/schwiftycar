@@ -34,7 +34,7 @@ class ControllerCore(object):
     def is_pressed(self):
         return self.pressed
 
-class RCController(objec):
+class RCController(object):     # if this is broken, take out the 't'
     '''
     RC Controller object
     '''
