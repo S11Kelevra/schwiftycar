@@ -60,8 +60,7 @@ def process_image(path, name, command, op_todo):
     '''
     Perform augmentation operations on images
     '''
-
-    image_paths = [os.path.join(path[i], name[i]) for i in range(len(path))]
+    image_paths = [os.path.join(path[i], name[i]) for i in range(len(path))] #
     aug_images = []
 
     for ops in op_todo:
@@ -96,12 +95,12 @@ def augment(set_name, equalize=False):
     cam_1_path = os.path.join(data_path, '1')                   # cam1or2 = ROOT_DIR/data_sets/set_name/1or2
     cam_2_path = os.path.join(data_path, '2')
 
-    op_todo = [
-        ([op_list[0]]),
-        ([op_list[1]]),
-        ([op_list[2]]),
-        ([op_list[0],op_list[2]]),
-        ([op_list[1],op_list[2]])
+    op_todo = [                     # to do list of op_list
+        ([op_list[0]]),             # [0] darken
+        ([op_list[1]]),             # [1] brighten
+        ([op_list[2]]),             # [2] flip (mirror)
+        ([op_list[0],op_list[2]]),  # [3] darken, flip
+        ([op_list[1],op_list[2]])   # [4] brighten, flip
     ]
 
     with open(label_path, 'r') as in_csv:                                   # open csv file in read
@@ -123,28 +122,28 @@ def augment(set_name, equalize=False):
                 cv2.imwrite(filename=img_1_path,img=cam_1_img)              # cv2.imwrite to save boosted image to
                 cv2.imwrite(filename=img_2_path,img=cam_2_img)              # same directory (overwrite?)
 
-    logger.info("Preprocessing images...")                                  # Begin log for actual preprocessing
-    with open(label_path, 'a+') as io_csv:                                  # 
-        io_csv.seek(0)
-        reader = csv.reader(io_csv, delimiter=',')
-        attribute = next(reader, None)
-        entries = list(reader)
-        cnt_total = len(entries)
-        cnt_iter = 0
+    logger.info("Preprocessing images...")                  # Begin log for actual preprocessing
+    with open(label_path, 'a+') as io_csv:                  # open csv file in append mode as io_csv
+        io_csv.seek(0)                                      # sets position to 0 (seek.() default is 0?)
+        reader = csv.reader(io_csv, delimiter=',')          # iterates over lines of csv file into reader dln = ','
+        attribute = next(reader, None)                      # gets next item from reader ???
+        entries = list(reader)                              # reader is broken into list
+        cnt_total = len(entries)                            # count entries
+        cnt_iter = 0                                        # index for progress bar
         util.progress_bar(cnt_iter, cnt_total)
-        for entry in entries:
-            logger.debug("working on %s" % str(entry))
-            cnt_iter += 1
-            util.progress_bar(cnt_iter, cnt_total)
-            new_entries = process_image(
-                [cam_1_path, cam_2_path],
-                [entry[0],entry[1]],
+        for entry in entries:                               # for all elements in entries
+            logger.debug("working on %s" % str(entry))      # log particular entry
+            cnt_iter += 1                                   # increase index
+            util.progress_bar(cnt_iter, cnt_total)          # update progress bar
+            new_entries = process_image(                    # new entries created from proc_img function
+                [cam_1_path, cam_2_path],                   # path = cams, name = entry[1/0], command = int(entry[-1])
+                [entry[0],entry[1]],                        # op_todo
                 int(entry[-1]),
                 op_todo)
-            writer = csv.writer(io_csv, delimiter=',')
-            for new_entry in new_entries:
-                writer.writerow(new_entry)
-            time.sleep(0.1)
+            writer = csv.writer(io_csv, delimiter=',')      # writer set with dlm = ','
+            for new_entry in new_entries:                   # for each value in entry
+                writer.writerow(new_entry)                  # write value to the row
+            time.sleep(0.1)                                 # wait
 
 def main():
     parser = build_parser()             # parses input (similarity threshold, equalize, name of data set)
