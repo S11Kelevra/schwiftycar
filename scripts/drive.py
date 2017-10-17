@@ -53,7 +53,7 @@ def check_cameras():
         pass
     return False
 
-def ctrl_c_handler(signum, frame):
+def ctrl_c_handler(signum, frame):      # takes the signal number and the current stack frame
     '''
     closes pygame
     '''
