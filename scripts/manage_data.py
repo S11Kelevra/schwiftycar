@@ -40,6 +40,7 @@ def build_parser():
 
 def merge(argset, outset):
     '''
+    Takes the data sets to be merged and creates the needed directories
     '''
     outset_path = os.path.join(config.data_path, outset)        # Outset_path = data_path+outset (data_sets+output name)
     outset_label = os.path.join(outset, outset+'.csv')          # Outset label is joined outset and outset .csv
