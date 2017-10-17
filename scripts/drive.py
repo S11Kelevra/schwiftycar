@@ -258,7 +258,7 @@ if __name__ == '__main__':
             print directory
             os.makedirs(directory)
 
-        model = models.model(True, model_conf['shape'],     # sets convolutional model
+        model = models.model(True, model_conf['shape'], # sets convolutional model
                     NUM_CLASSES,                        # NUM_CLASSES = 4 (set at beginning of file)
                     args.model)                         # adds the model input
         rc_car.start()                                  # tells car to start but not move (TODO? if statement error?)

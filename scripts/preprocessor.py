@@ -7,7 +7,7 @@ import sys
 import os
 import re
 from os.path import dirname
-from os.path import basename
+from os.path import basename # needed?
 import csv
 import time
 import argparse
@@ -58,35 +58,43 @@ def build_parser():
 
 def process_image(path, name, command, op_todo):
     '''
-    Perform augmentation operations on images
+    Performs augmentation operations on images in specified data set
+    Ex: Darken, lighten flip ect ...
+    :param path: file path to data set
+    :param name: name of entry
+    :param command: ????
+    :param op_todo: set of operators
+    :return: list of augmented images and commands
     '''
-    image_paths = [os.path.join(path[i], name[i]) for i in range(len(path))] #
-    aug_images = []
+    image_paths = [os.path.join(path[i], name[i]) for i in range(len(path))] # image_paths = ROOT_DIR/data_sets/set_name/1or2/name[i]
+    aug_images = []         # empty list for augmented images
 
-    for ops in op_todo:
-        new_command = command
-        for ind in range(len(image_paths)):
-            img_orig = cv2.imread(image_paths[ind], 1)
-            new_image = img_orig
-            output_prepend = ""
-            for op in ops:
-                output_prepend += op[0]+"_"
-                new_image = op[1](new_image)
-                if op[0] == 'flip':
-                    new_command = reverse[command]
+    for ops in op_todo:                                 # for each operation set in op_todo (line 97)
+        new_command = command                           # new_command = int(entry[-1]) ?? dafuq?
+        for ind in range(len(image_paths)):             # for each image in the directory
+            img_orig = cv2.imread(image_paths[ind], 1)  # loads color image into img_original
+            new_image = img_orig                        # copy image to new_image
+            output_prepend = ""                         # reset prepend?
+            for op in ops:                              # for current operation in operation list (either 0 or 1)
+                output_prepend += op[0]+"_"             # prepend augment with "_" ex "darken_" or flip_"
+                new_image = op[1](new_image)            # preform augment on copy of original
+                if op[0] == 'flip':                     # if first operation=flip drive command is taken from
+                    new_command = reverse[command]      # from reverse[command] list (line 34)
             cv2.imwrite(
-                filename=os.path.join(path[ind], output_prepend+name[ind]),
-                img=new_image)
-        aug_images.append([
-            output_prepend+name[0],
+                filename=os.path.join(path[ind], output_prepend+name[ind]), # write the augmented image with the prepend
+                img=new_image)                                              # name Ex: "darken_flip_4242.jpg"
+        aug_images.append([             # append the augmented image list with 3 values
+            output_prepend+name[0],     # ['prepend'_'data_set[0]'], ['prepend'_'data_set[1]'], [new drive command]
             output_prepend+name[1],
             new_command])
 
-    return aug_images
+    return aug_images                   # return the appended list of augmented images and new drive commans
 
 def augment(set_name, equalize=False):
     '''
-
+    :param set_name: name of data set
+    :param equalize: whether or not to improve contrast of images (off by default)
+    :return: writes the new images and commands to the data set
     '''
     data_path = os.path.join(config.data_path, set_name)        # data_path = ROOT_DIR/data_sets/set_name
     label_path = os.path.join(set_name, set_name+'.csv')        # label_path = set_name/set_name.csv
@@ -146,6 +154,9 @@ def augment(set_name, equalize=False):
             time.sleep(0.1)                                 # wait
 
 def main():
+    '''
+    :return:
+    '''
     parser = build_parser()             # parses input (similarity threshold, equalize, name of data set)
     args = parser.parse_args()          # values taken into args
 
