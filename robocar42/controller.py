@@ -20,15 +20,28 @@ class ControllerCore(object):
     Core Controller object class
     '''
     def __init__(self, set_name, car, auto=False):
+        '''
+        :param set_name:
+        :param car:
+        :param auto:
+        '''
         self.set_name = set_name
         self.auto = auto
         self.car = car
         self.pressed = False
 
     def send_control(self):
+        #todo
+        '''
+        :return:
+        '''
         pass
 
     def drive(self):
+        #todo
+        '''
+        :return:
+        '''
         pass
 
     def is_pressed(self):
@@ -39,7 +52,16 @@ class RCController(object):     # if this is broken, take out the 't'
     RC Controller object
     '''
     def __init__(self, set_name, car, auto=False):
+        '''
+        :param set_name:
+        :param car:
+        :param auto:
+        '''
         super(RCController, self).__init__(set_name, car, auto)
 
     def send_control(self):
+        #todo
+        '''
+        :return:
+        '''
         pass

@@ -57,6 +57,7 @@ def ctrl_c_handler(signum, frame):      # takes the signal number and the curren
     '''
     closes pygame
     '''
+    print("Quitting!")
     pygame.quit()
     exit(0)
 
@@ -64,6 +65,7 @@ def cleanup(display):       # takes the object Display from display.py
     '''
     closes display
     '''
+    print("stopping display")
     display.stop()
     exit(0)
 
