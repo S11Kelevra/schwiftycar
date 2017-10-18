@@ -33,23 +33,23 @@ class Car(object):
         '''
         direct = Car.ops['direct'][req[0]]
         spd = '/m'
-        if req[1] < 0:
-            spd += str(0)
-        elif req[1] > self.max_speed:
+        if req[1] < 0:                  # spd is determined by req[1].
+            spd += str(0)               # if req[1] is less than 0, add 0
+        elif req[1] > self.max_speed:   # if req[1] is greater than max speed, add max
             spd += str(self.max_speed)
-        else:
+        else:                           # if it's a valid value, add the value
             spd += str(req[1])
-        steer = Car.ops['steer'][req[2]]
+        steer = Car.ops['steer'][req[2]]    # sets the steer value (/lf, /st /rt)
         if req[2] == 0:
             angle = str(self.straight)
         elif (req[3] < min(self.left, self.right) or
-              req[3] > max(self.left, self.right)):
-            if req[2] == -1:
+              req[3] > max(self.left, self.right)):     # determines the steer value
+            if req[2] == -1:                            # angles left
                 angle = str(self.left)
-            elif req[2] == 1:
+            elif req[2] == 1:                           # angles right
                 angle = str(self.right)
-        else:
-            angle = str(req[3])
+        else:                                           # if req[2] is not -1, 0, or 1...
+            angle = str(req[3])                         # angle is set to req[3]
         cmd = 'http://' + self.url + direct + spd + steer + angle + '/exp' + str(self.exp)
         try:
             urllib2.urlopen(cmd, timeout=2)
@@ -61,6 +61,6 @@ class Car(object):
         '''
         Pings the car to verify that it works
         '''
-        if self.drive([0, 0, 0, 0]):
+        if self.drive([0, 0, 0, 0]):    # sends 0's in a list to drive.
             return True
         return False
