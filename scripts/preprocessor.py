@@ -157,7 +157,9 @@ def main():
     '''
     :return:
     '''
+    print("Building parser")
     parser = build_parser()             # parses input (similarity threshold, equalize, name of data set)
+    print("Looking for arguments")
     args = parser.parse_args()          # values taken into args
 
     logger.critical("Process Start")                # begin the log
@@ -165,9 +167,12 @@ def main():
         logger.error("ERROR - Invalid set name")    # logs error if no set by that name
         exit(0)                                     # exits
 
-    pre_path = os.path.join(config.pre_path, args.set_name)             # pre_path = ROOT_DIR/data_sets/set_name
+    pre_path = os.path.join(config.pre_path, args.set_name)   # pre_path = ROOT_DIR/data_sets/set_name
+    print("pre_path =" + pre_path)
     pre_label_path = os.path.join(args.set_name, args.set_name+'.csv')  # pre_label_path = set_name/set_name.csv
+    print("pre_label_path =" + pre_label_path)
     pre_label_path = os.path.join(config.pre_path, pre_label_path)      # pre_label_path = ROOT_DIR/data_sets/set_name/....?
+    print("New pre_label_path" + pre_label_path)
 
     if not os.path.exists(pre_path):
         logger.error("ERROR - Unable to find preproc. set: %s" % args.set_name) # if set name doesn't exist log error

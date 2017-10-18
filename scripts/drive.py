@@ -44,6 +44,7 @@ def check_cameras():
     '''
     checks to see if the cameras are online
     '''
+    print("Pinging those hot cams!")
     try:
         cam_1_ret = pyping.ping(cam_1['cam_url'], udp=True).ret_code    # pings camera1
         cam_2_ret = pyping.ping(cam_2['cam_url'], udp=True).ret_code    # pings camera2
@@ -73,6 +74,7 @@ def conv_to_vec(action):    # takes a string containted within links ex:('/fwd/l
     '''
     Convert old car actions into vect for car module
     '''
+    print("Converting actions to vectors!")
     req = [0] * 4
     if '/fwd' in action: req[0] = 1     # forward sets req[0] to 1
     elif '/rev' in action: req[0] = -1  # reverse sets req[0] to -1
@@ -88,6 +90,7 @@ def concantenate_image(images):                     # takes a set of images
     '''
     Processes images and return normalized/combined single image
     '''
+    print("Concatinating camera images!")
     images[0] = np.swapaxes(images[0], 1, 0)        # swaps the axes in the images (mirror)
     images[1] = np.swapaxes(images[1], 1, 0)
     aimage = np.concatenate(tuple(images), axis=1)  # concatenates the images along axis 1
@@ -99,7 +102,7 @@ def concantenate_image(images):                     # takes a set of images
     return aimage
 
 def auto_drive(images):                                         # takes a set of images
-    print "auto drive func"
+    print ("Autopilot engaged!")
     if images:                                                  # if there are images...
         prec_image = concantenate_image(images)                 # returns a concatonated and resized image
         pred_act = model.predict(np.array([prec_image]))[0]     # creates an array based on prec_image
@@ -115,6 +118,7 @@ def auto_drive(images):                                         # takes a set of
         return None, False
 
 def manual_drive(intent, teach=False):          # takes intent (key up/left,down/right) and the input teach(str)
+    print("Moving to manual controls!")
     for act_i in range(len(actions)):
         tmp = actions[act_i]
         if tmp==intent:                         # matches the intended action with the list of actions
@@ -128,7 +132,7 @@ def drive(auto, set_name, rec_dirs=None, teach=False):  # takes args.auto (str),
     ot = 0                                              # original time
     img_ot = 0                                          # image original time
     running = True
-
+    print("Driving!")
     intent = 0
     label_path = os.path.join(set_name, set_name+'.csv') # makes a .csv(comma separated values) file of the set name
     label_path = os.path.join(config.pre_path, label_path)
@@ -147,7 +151,7 @@ def drive(auto, set_name, rec_dirs=None, teach=False):  # takes args.auto (str),
             screen.blit(surface[0], (0,0))              # renders objects onto the screen
             screen.blit(surface[1], (disp_conf['oshape'][0],0))
             pygame.display.flip()
-            keys = pygame.key.get_pressed()             # returns the statle of all keyboard buttons
+            keys = pygame.key.get_pressed()             # returns the state of all keyboard buttons
             for act_i in range(len(actions)):           # sets the intent to the action input
                 tmp = actions[act_i]                    # sets tmp = to one of the actions (up, left, right, down)
                 if keys[tmp]:
@@ -196,10 +200,12 @@ def gen_default_name():
     '''
     generates a name for the training images
     '''
+    print("Generating dank memes")
     rec_folder = "rec_%s" % time.strftime("%d_%m_%H_%M")    # sets folder name after day,month,hour,minute
     return rec_folder
 
 def build_parser():
+    print("Building parser!")
     parser = argparse.ArgumentParser(description='Drive')
     parser.add_argument(
         '-auto',                                        # autonomous or manual
@@ -227,6 +233,7 @@ def check_arguments(args):              # takes the list of arguments (args)
     '''
     checks that model was input
     '''
+    print("Checking arguments!")
     if args.auto and not args.model:    # checks the input arguments for auto and model
         return False                    # if no model is found but auto is, return False
     return True
@@ -237,6 +244,7 @@ def check_set_name(rec_folder):     # takes a path name as a string (?)
     to be sure they don't exist. Otherwise it'd
     overwrite.
     '''
+    print("Checking set name!")
     rec_dirs = [rec_folder+'/'+str(i) for i in range(2)]
     for directory in rec_dirs:
         if os.path.exists(directory):
@@ -244,6 +252,7 @@ def check_set_name(rec_folder):     # takes a path name as a string (?)
     return True
 
 if __name__ == '__main__':
+    print("Connecting to skynet")
     signal.signal(signal.SIGINT, ctrl_c_handler)    # set handler number
     parser = build_parser()                         # builds string from inputs
     args = parser.parse_args()                      # parses string into arguments
