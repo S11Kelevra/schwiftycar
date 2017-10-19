@@ -26,7 +26,9 @@ def get_staging():
     Gets the list of files under the staging folder
     '''
     cloud_conf = config.cloud_parser_config('cloud.ini')
+    print(cloud_conf)
     client = storage.Client()
+    print(client)
     bucket = client.get_bucket(cloud_conf['bucket'])
     folder = cloud_conf['folder']+'/'
     blobs = list(bucket.list_blobs(prefix=folder, delimiter='/'))
@@ -117,8 +119,9 @@ def interrupt_handler(signum, frame):
     logger.info("Exiting program...")
 
 if __name__ == '__main__':
+    print("Staging!")
     signal.signal(signal.SIGINT, interrupt_handler)
-    if not os.path.exists(config.download_path):
+    if not os.path.exists(config.download_path): # added to config 10/18/17
         os.makedirs(config.download_path)
     interrupted = False
     while not interrupted:

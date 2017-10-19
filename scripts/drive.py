@@ -200,8 +200,8 @@ def gen_default_name():
     '''
     generates a name for the training images
     '''
-    print("Generating dank memes")
     rec_folder = "rec_%s" % time.strftime("%d_%m_%H_%M")    # sets folder name after day,month,hour,minute
+    print("Generating dank meme: " + rec_folder)
     return rec_folder
 
 def build_parser():

@@ -12,6 +12,7 @@ data_path = os.path.join(ROOT_DIR, "data_sets")
 pre_path = os.path.join(ROOT_DIR, "pre")
 model_path = os.path.join(ROOT_DIR, "models")
 log_path = os.path.join(ROOT_DIR, "logs")
+download_path = os.path.join(ROOT_DIR, "Download") # for staging
 
 # all paths must exist to project to fully work
 if (not os.path.exists(config_path) or not os.path.exists(data_path) or

@@ -46,13 +46,37 @@ def get_X_y(data_files):        # currently empty
     '''
     Read the csv files and generate X/y pairs.
     '''
-    pass
+    # Added from older code base
+    """Read the log file and turn it into X/y pairs. Add an offset to left images, remove from right images."""
+    X, y = [], []
+    with open(data_file) as fin:
+        reader = csv.reader(fin)
+        next(reader, None)
+        for img, command in reader:
+            X.append(img.strip())
+            y.append(int(command))
+    return X, to_categorical(y, num_classes=NUM_CLASSES)
+    # ____________________________________________________
 
 def _generator(batch_size, classes, X, y):      # currently empty
     '''
     Generate batches for training
     '''
-    pass
+    # added from older code base
+    """Generate batches of training data forever."""
+    while 1:
+        batch_X, batch_y = [], []
+        for i in range(batch_size):
+            # random.seed(random.randint(0, 9001))
+            class_i = random.randint(0, NUM_CLASSES - 1)
+            # sample_index = random.randint(0, len(classes[class_i]) - 1)
+            sample_index = random.choice(classes[class_i])
+            command = y[sample_index]
+            image, command = process_image(img_dir + X[sample_index], command, augment=augment)
+            batch_X.append(image)
+            batch_y.append(command)
+        yield np.array(batch_X), np.array(batch_y)
+ # ____________________________________________________
 
 def train(conf, model, train_name=None):    # currently not called anywhere
     '''
