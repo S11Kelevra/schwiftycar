@@ -8,7 +8,6 @@ import argparse
 sys.path.append(dirname(dirname(os.path.realpath(__file__))))
 from robocar42 import config, util, models
 
-
 model_conf = config.model_parser_config('model_1.ini')
 display_conf = config.display_parser_config('display.ini')
 
@@ -31,14 +30,13 @@ if __name__ == '__main__':
     args = parser.parse_args()
     print("Parsing arguments!")
     print("Set name = " + args.set_name)
-    print("Batch size = ", model_conf['batch'])
+    print("Batch size = " + str(model_conf['batch']))
     data_set = os.path.join(config.data_path , args.set_name)
     if not os.path.exists(data_set):
         print("Data set does not exist")
         exit()
     model_name = os.path.join(config.model_path , args.model)
-    print("Model name = " + str(model_name))
-
+    print("Model name = " + model_name)
     print("Data set =" + data_set)
-    models.train(model_conf, model_name, data_set)
+    # models.train(model_conf, model, train_name)
     exit()

@@ -14,12 +14,14 @@ from keras.preprocessing.image import flip_axis, random_shift
 from keras.utils import to_categorical
 
 from robocar42 import config
+NUM_CLASSES = 4
 
 def model(load, shape, classes_num, tr_model=None):
     '''
     Returns a convolutional model from file or to train on.
     '''
-    if load and tr_model: return load_model(tr_model)
+    if load and tr_model:
+        return load_model(tr_model)
 
     conv3x3_l, dense_layers = [24, 32, 40, 48], [512, 64, 16]
 
@@ -83,14 +85,15 @@ def train(conf, model, train_name=None):    # currently not called anywhere
     Load the network and data, fit the model, save it
     '''
     print("Starting train!")
+    print(type(conf['shape']))
     if model:
         print("Model entered!")
-        net = model(load=True, shape=conf['shape'], tr_model=model)
+        net = model(load=True, shape=(conf['shape']), tr_model=model)
     else:
         print("No model entered")
-        net = model(load=False, shape=conf['shape'])
+        net = model(load=False, shape=(conf['shape']))
     net.summary()
-    X, y, = get_X_y(train_name) #give list of files
+    X, y, = get_X_y() #give list of files
     Xtr, Xval, ytr, yval = train_test_split(
                                 X, y,
                                 test_size=conf['val_split'],
