@@ -82,9 +82,12 @@ def train(conf, model, train_name=None):    # currently not called anywhere
     '''
     Load the network and data, fit the model, save it
     '''
+    print("Starting train!")
     if model:
+        print("Model entered!")
         net = model(load=True, shape=conf['shape'], tr_model=model)
     else:
+        print("No model entered")
         net = model(load=False, shape=conf['shape'])
     net.summary()
     X, y, = get_X_y(train_name) #give list of files

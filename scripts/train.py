@@ -32,12 +32,13 @@ if __name__ == '__main__':
     print("Parsing arguments!")
     print("Set name = " + args.set_name)
     print("Batch size = ", model_conf['batch'])
-    model_name = os.path.join(config.model_path , args.model)
-    print("Model name = " + str(model_name))
     data_set = os.path.join(config.data_path , args.set_name)
     if not os.path.exists(data_set):
         print("Data set does not exist")
         exit()
+    model_name = os.path.join(config.model_path , args.model)
+    print("Model name = " + str(model_name))
+
     print("Data set =" + data_set)
     models.train(model_conf, model_name, data_set)
     exit()
