@@ -98,7 +98,7 @@ def augment(set_name, equalize=False):
     '''
     data_path = os.path.join(config.data_path, set_name)        # data_path = ROOT_DIR/data_sets/set_name
     label_path = os.path.join(set_name, set_name+'.csv')        # label_path = set_name/set_name.csv
-    label_path = os.path.join(config.data_path, label_path)     # label_path = ROOT_DIR/data_sets/set_name/set_name/set_name.csv
+    label_path = os.path.join(config.data_path, label_path)     # label_path = ROOT_DIR/data_sets/set_name/set_name.csv
 
     cam_1_path = os.path.join(data_path, '1')                   # cam1or2 = ROOT_DIR/data_sets/set_name/1or2
     cam_2_path = os.path.join(data_path, '2')
