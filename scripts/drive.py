@@ -257,7 +257,7 @@ if __name__ == '__main__':
     parser = build_parser()                         # builds string from inputs
     args = parser.parse_args()                      # parses string into arguments
 
-    if not check_arguments(args):                   # checks if the arguments are valide
+    if not check_arguments(args):                   # checks if the arguments are valid
         logger.error("Error: Invalid command line arguments")
 
     if check_cameras():                             # if cameras are running, pass true to the model.model

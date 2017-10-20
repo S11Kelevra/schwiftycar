@@ -87,7 +87,7 @@ def train(conf, model, train_name=None):    # currently not called anywhere
     else:
         net = model(load=False, shape=conf['shape'])
     net.summary()
-    X, y, = get_X_y()
+    X, y, = get_X_y(data_path) #give list of files
     Xtr, Xval, ytr, yval = train_test_split(
                                 X, y,
                                 test_size=conf['val_split'],
