@@ -38,5 +38,5 @@ if __name__ == '__main__':
     model_name = os.path.join(config.model_path , args.model)
     print("Model name = " + model_name)
     print("Data set =" + data_set)
-    # models.train(model_conf, model, train_name)
+    models.train(model_conf, model_name, data_set)
     exit()
