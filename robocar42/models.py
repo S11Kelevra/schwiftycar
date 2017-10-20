@@ -42,7 +42,7 @@ def model(load, shape, classes_num, tr_model=None):             # called in driv
     )
     return model
 
-def get_X_y(data_files):        # currently empty
+def get_X_y(data_files):
     '''
     Read the csv files and generate X/y pairs.
     '''
@@ -58,7 +58,7 @@ def get_X_y(data_files):        # currently empty
     return X, to_categorical(y, num_classes=NUM_CLASSES)
     # ____________________________________________________
 
-def _generator(batch_size, classes, X, y):      # currently empty
+def _generator(batch_size, classes, X, y):
     '''
     Generate batches for training
     '''
@@ -78,20 +78,20 @@ def _generator(batch_size, classes, X, y):      # currently empty
         yield np.array(batch_X), np.array(batch_y)
  # ____________________________________________________
 
-def train(conf, model, train_name=None):    # currently not called anywhere
+def train(conf, model, train_name=None):
     '''
     Load the network and data, fit the model, save it
     '''
     print("Starting train!")
-    if model:
+    if model:                       # if a model was entered, load it
         print("Model entered!")
         net = model(load=True, shape=conf['shape'], tr_model=model)
-    else:
+    else:                           # otherwise create a new model
         print("No model entered")
         net = model(load=False, shape=conf['shape'])
-    net.summary()
-    X, y, = get_X_y(train_name) #give list of files
-    Xtr, Xval, ytr, yval = train_test_split(
+    net.summary()                   # prints a summary representation of the model
+    X, y, = get_X_y(train_name)     # give list of files
+    Xtr, Xval, ytr, yval = train_test_split(    # test_train_split: returns list containing train-test split of inputs
                                 X, y,
                                 test_size=conf['val_split'],
                                 random_state=random.randint(0, 100)
@@ -107,18 +107,18 @@ def train(conf, model, train_name=None):    # currently not called anywhere
             if yval[i][j]:
                 val_classes[j].append(i)
 
-    net.fit_generator(
+    net.fit_generator(                  # returns a History object
         _generator(conf['batch'], tr_classes, Xtr, ytr),
         validation_data=_generator(conf['batch'], val_classes, Xval, yval),
-        validation_steps=max(len(Xval) // conf['batch'], 1),
-        steps_per_epoch=1,
-        epochs=1
+        validation_steps=max(len(Xval) // conf['batch'], 1),    # total number of steps to yield from generator before stopping
+        steps_per_epoch=1,              # steps to yield from generator before declaring one epoch finish and starting the next
+        epochs=1                        # total number of iterations on the data
     )
     net.fit_generator(
         _generator(conf['batch'], tr_classes, Xtr, ytr),
         validation_data=_generator(conf['batch'], val_classes, Xval, yval),
         validation_steps=max(len(Xval) // conf['batch'], 1),
-        steps_per_epoch=conf['steps'],
-        epochs=conf['epochs']
+        steps_per_epoch=conf['steps'],  # (200), from model_1.ini
+        epochs=conf['epochs']           # (10), from model_1.ini
     )
-    net.save()
+    net.save()          # saves the model as a .h5 file.
