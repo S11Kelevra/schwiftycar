@@ -93,8 +93,8 @@ def train(conf, model, train_name=None):
     X, y, = get_X_y(train_name)     # give list of files
     Xtr, Xval, ytr, yval = train_test_split(    # test_train_split: returns list containing train-test split of inputs
                                 X, y,
-                                test_size=conf['val_split'],
-                                random_state=random.randint(0, 100)
+                                test_size=conf['val_split'],    # val_split = 0.15 from model_1.ini
+                                random_state=random.randint(0, 100) # the seed used by the RNG
                            )
     tr_classes = [[] for _ in range(conf[''])]
     for i in range(len(ytr)):
