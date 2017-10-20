@@ -98,22 +98,22 @@ def train(conf, model, train_name=None):
         print("No model entered")
         net = model(load=False, shape=(conf['shape']))
     net.summary()
-    X, y, = get_X_y() #give list of files
+    X, y, = get_X_y()                           # give list of files
     Xtr, Xval, ytr, yval = train_test_split(
 =======
-    if model:                       # if a model was entered, load it
+    if model:                                   # if a model was entered, load it
         print("Model entered!")
         net = model(load=True, shape=conf['shape'], tr_model=model)
-    else:                           # otherwise create a new model
+    else:                                       # otherwise create a new model
         print("No model entered")
         net = model(load=False, shape=conf['shape'])
-    net.summary()                   # prints a summary representation of the model
-    X, y, = get_X_y(train_name)     # give list of files
+    net.summary()                               # prints a summary representation of the model
+    X, y, = get_X_y(train_name)                 # give list of files
     Xtr, Xval, ytr, yval = train_test_split(    # test_train_split: returns list containing train-test split of inputs
 >>>>>>> 09b421502f251ed6e808ee81530240d9f1a4d318
                                 X, y,
-                                test_size=conf['val_split'],    # val_split = 0.15 from model_1.ini
-                                random_state=random.randint(0, 100) # the seed used by the RNG
+                                test_size=conf['val_split'],            # val_split = 0.15 from model_1.ini
+                                random_state=random.randint(0, 100)     # the seed used by the RNG
                            )
     tr_classes = [[] for _ in range(conf[''])]
     for i in range(len(ytr)):
