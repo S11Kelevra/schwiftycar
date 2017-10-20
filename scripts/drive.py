@@ -11,7 +11,7 @@ import argparse
 import atexit
 import csv
 import signal
-import logging
+#import logging
 sys.path.append(dirname(dirname(os.path.realpath(__file__))))
 
 import cv2
@@ -75,6 +75,7 @@ def conv_to_vec(action):    # takes a string containted within links ex:('/fwd/l
     Convert old car actions into vect for car module
     '''
     print("Converting actions to vectors!")
+    logger.debug("conv_to_vec=%s", action)
     req = [0] * 4
     if '/fwd' in action: req[0] = 1     # forward sets req[0] to 1
     elif '/rev' in action: req[0] = -1  # reverse sets req[0] to -1
@@ -84,6 +85,7 @@ def conv_to_vec(action):    # takes a string containted within links ex:('/fwd/l
     elif '/rt' in action: req[2] = 1    # right sets req[2] to 1
     else: req[2] = 0                    # straight sets req[2] to 0
     req[3] = -1                         # req[3] = -1
+    logger.debug("return of conv_to_vec: req=%s", req)
     return req
 
 def concantenate_image(images):                     # takes a set of images
@@ -122,7 +124,7 @@ def manual_drive(intent, teach=False):          # takes intent (key up/left,down
     for act_i in range(len(actions)):
         tmp = actions[act_i]
         if tmp==intent:                         # matches the intended action with the list of actions
-            logging.debug("acting out %d" % tmp)
+            logger.debug("acting out %d" % tmp)
             if not teach:                       # if teach if false...
                 rc_car.drive(conv_to_vec(links[act_i]))
             return act_i, True
@@ -132,7 +134,7 @@ def drive(auto, set_name, rec_dirs=None, teach=False):  # takes args.auto (str),
     ot = 0                                              # original time
     img_ot = 0                                          # image original time
     running = True
-    print("Driving!")
+    logger.debug("Starting drive: auto=%s, set_name=%s, rec_dirs=%s, teach=%s", auto, set_name, rec_dirs, teach)
     intent = 0
     label_path = os.path.join(set_name, set_name+'.csv') # makes a .csv(comma separated values) file of the set name
     label_path = os.path.join(config.pre_path, label_path)
@@ -148,21 +150,25 @@ def drive(auto, set_name, rec_dirs=None, teach=False):  # takes args.auto (str),
             ct = time.time()                            # returns the time in seconds
             drive = True if (ct - ot) * 1000 > rc_car.exp + delta_time else drive
             surface, images, filenames = disp.show((rec_dirs), rec_dirs)    # ?
+            logger.debug("screen.blit1")
             screen.blit(surface[0], (0,0))              # renders objects onto the screen
+            logger.debug("screen.blit2")
             screen.blit(surface[1], (disp_conf['oshape'][0],0))
+            logger.debug("display.flip")
             pygame.display.flip()
+            logger.debug("key.get_pressed")
             keys = pygame.key.get_pressed()             # returns the state of all keyboard buttons
             for act_i in range(len(actions)):           # sets the intent to the action input
                 tmp = actions[act_i]                    # sets tmp = to one of the actions (up, left, right, down)
                 if keys[tmp]:
-                    logging.debug("Key pressed %d" % tmp)
+                    logger.debug("Key pressed %d" % tmp)
                     intent = tmp                        # sets intent equal to tmp (one of the keys up/left/right/down)
             if keys[pygame.K_ESCAPE] or keys[pygame.K_q] or \
                 pygame.event.peek(pygame.QUIT):         # If exited with esc, q, or the quit event
-                logging.debug("Exit pressed")           # then notify the debug log, and return to main
+                logger.debug("Exit pressed")           # then notify the debug log, and return to main
                 return
             if drive and not auto:                      # if in manual...
-                logging.debug("Manual Drive")
+                logger.debug("Manual Drive. drive=%s", drive)
                 drive = False
                 car_act, flag = manual_drive(intent, teach)
                 if flag:                                # if manual_drive returned the 'True' flag
@@ -175,11 +181,12 @@ def drive(auto, set_name, rec_dirs=None, teach=False):  # takes args.auto (str),
                 ot = ct
             if keys[pygame.K_a]:                        # toggles auto on
                 auto = True
-                logging.info("Autopilot mode on!")
+                logger.info("Autopilot mode on!")
             if keys[pygame.K_s]:                        # toggles auto off
                 auto = False
-                logging.info("Autopilot mode off!")
+                logger.info("Autopilot mode off!")
             keys = []
+            logger.debug("pre-pygame.event.pump")
             pygame.event.pump()                         # internally process pygame event handlers
             if images and auto and drive:
                 logger.debug("Auto drive")
@@ -193,6 +200,7 @@ def drive(auto, set_name, rec_dirs=None, teach=False):  # takes args.auto (str),
                         car_act
                     ]
             if entry:                                   # writes entry information to the csv object then clears entry
+                logger.debug("csv-writer: %s", entry)
                 csv_writer.writerow(entry)
                 entry = None
 
@@ -275,11 +283,13 @@ if __name__ == '__main__':
         rc_car.start()                                  # tells car to start but not move (TODO? if statement error?)
         disp = Display('main', disp_conf, ['camera_1.ini', 'camera_2.ini']) # sets disp to Display(robocar42/display.py)
         atexit.register(cleanup, disp)                          # upon close, runs cleanup w/ the arg (disp), closing the display
+        logger.debug("initializing pygame")
         pygame.init()                                           # initializes all imported pygame modules
         screen = pygame.display.set_mode(disp_conf['doshape'])  # set screen to doshapeX and Y from display.ini
-
         drive(args.auto, args.train, rec_dirs, args.teach)      # starts the drive function
+        logger.debug("exiting drive, onto disp.stop")
         disp.stop()             # stops the display
+        logger.debug("entering pygame.quit")
         pygame.quit()           # quits pygame
     else:                       # occurs if check_cameras returned false, meaning they could not be pinged.
         logger.error("Error: Unable to reach cameras!"

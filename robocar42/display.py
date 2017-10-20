@@ -8,8 +8,10 @@ sys.path.append('..')
 
 import pygame
 
-from robocar42 import config, camera
+from robocar42 import config, camera, util
 from robocar42.CustomException import DisplayError
+
+logger = util.configure_log('display')
 
 class Display(object):
     '''
@@ -64,9 +66,12 @@ class Display(object):
         of each camera to their corresponding directories
         Otherwise, display will just show the frames only
         '''
+        logger.debug("disp.show: self=%s, save=%s, record_dirs=%s", self, save, record_dirs)
         if save and record_dirs:
+            logger.debug("returning self.record(record_dirs)")
             return self.record(record_dirs)
         else:
+            logger.debug("returning self.view_only")
             return self.view_only()
 
     def view_only(self):
@@ -80,7 +85,7 @@ class Display(object):
             image = cam.get()
             ret_images.append(image)
             surface = pygame.Surface(self.disp_conf['oshape'])
-            pygame.pixelcopy.array_to_surface(surface, image) 
+            pygame.pixelcopy.array_to_surface(surface, image)
             ret_frames.append(surface)
         return ret_frames, ret_images, None
 
