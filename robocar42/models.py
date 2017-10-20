@@ -20,12 +20,9 @@ def model(load, shape, classes_num, tr_model=None):             # called in driv
     '''
     Returns a convolutional model from file or to train on.
     '''
-<<<<<<< HEAD
-    if load and tr_model:
+
+    if load and tr_model:                                       # if specific model is called to train, load_model
         return load_model(tr_model)
-=======
-    if load and tr_model: return load_model(tr_model)           # if specific model is called to train, load_model
->>>>>>> 09b421502f251ed6e808ee81530240d9f1a4d318
 
     conv3x3_l, dense_layers = [24, 32, 40, 48], [512, 64, 16]   # creates tuples for conv3x3_l and desne_layers
 
@@ -89,18 +86,7 @@ def train(conf, model, train_name=None):
     Load the network and data, fit the model, save it
     '''
     print("Starting train!")
-<<<<<<< HEAD
-    print(type(conf['shape']))
-    if model:
-        print("Model entered!")
-        net = model(load=True, shape=(conf['shape']), tr_model=model)
-    else:
-        print("No model entered")
-        net = model(load=False, shape=(conf['shape']))
-    net.summary()
-    X, y, = get_X_y()                           # give list of files
-    Xtr, Xval, ytr, yval = train_test_split(
-=======
+
     if model:                                   # if a model was entered, load it
         print("Model entered!")
         net = model(load=True, shape=conf['shape'], tr_model=model)
@@ -110,7 +96,6 @@ def train(conf, model, train_name=None):
     net.summary()                               # prints a summary representation of the model
     X, y, = get_X_y(train_name)                 # give list of files
     Xtr, Xval, ytr, yval = train_test_split(    # test_train_split: returns list containing train-test split of inputs
->>>>>>> 09b421502f251ed6e808ee81530240d9f1a4d318
                                 X, y,
                                 test_size=conf['val_split'],            # val_split = 0.15 from model_1.ini
                                 random_state=random.randint(0, 100)     # the seed used by the RNG
