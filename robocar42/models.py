@@ -15,30 +15,30 @@ from keras.utils import to_categorical
 
 from robocar42 import config
 
-def model(load, shape, classes_num, tr_model=None):
+def model(load, shape, classes_num, tr_model=None):             # called in drive.py (inputs: load=True, shape from model_1.ini, 4, None(unless specified))
     '''
     Returns a convolutional model from file or to train on.
     '''
-    if load and tr_model: return load_model(tr_model)
+    if load and tr_model: return load_model(tr_model)           # if specific model is called to train, load_model
 
-    conv3x3_l, dense_layers = [24, 32, 40, 48], [512, 64, 16]
+    conv3x3_l, dense_layers = [24, 32, 40, 48], [512, 64, 16]   # creates tuples for conv3x3_l and desne_layers
 
-    model = Sequential()
-    model.add(Conv2D(16, (5, 5), activation='elu', input_shape=shape))
-    model.add(MaxPooling2D())
-    for i in range(len(conv3x3_l)):
+    model = Sequential()                                        # creates an empty linear stack of layers
+    model.add(Conv2D(16, (5, 5), activation='elu', input_shape=shape))  # adds a layer with these perameters: (16) convolutional filters, (5) rows by (5) columns in each convolutional kernal, activation = elu (Exponential Linear Unit function), shape = 120, 320, 3(depth width height of each digit image)
+    model.add(MaxPooling2D())                           # layer reduces the number of parameters in the model by taking the max of the values from the previous filter
+    for i in range(len(conv3x3_l)):                     # adds additional layers for [24, 32, 40, 48]
         model.add(Conv2D(conv3x3_l[i], (3, 3), activation='elu'))
-        if i < len(conv3x3_l) - 1:
+        if i < len(conv3x3_l) - 1:                      # adds another maxpooling2d layer between layers until last layer
             model.add(MaxPooling2D())
-    model.add(Flatten())
-    for dl in dense_layers:
-        model.add(Dense(dl, activation='elu'))
-        model.add(Dropout(0.5))
-    model.add(Dense(classes_num, activation='softmax'))
+    model.add(Flatten())                                # adds a flattening layer (makes the weights from the convolutional layers 1 dimensional)
+    for dl in dense_layers:                             # adds a Dense Layer as well as a Dropout Layer for all 3 dense_layers
+        model.add(Dense(dl, activation='elu'))          # first parameter is equal to output size
+        model.add(Dropout(0.5))                         # applies a 50% dropout to its inputs (previous layers outputs in this case)
+    model.add(Dense(classes_num, activation='softmax')) # makes a final layer with 4 possible outputs (from classes_num)
     model.compile(
         loss='categorical_crossentropy',
-        optimizer="adam",
-        metrics=['accuracy']
+        optimizer="adam",                               # default settings for "Adam - A Method for Stochastic Optimization"
+        metrics=['accuracy']                            # metrics used for classification
     )
     return model
 
