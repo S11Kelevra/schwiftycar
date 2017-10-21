@@ -171,4 +171,4 @@ def train(csv_file, model_name=None, cam_num=None, is_new_model=False):
         steps_per_epoch=model_conf['steps'],  # (200), from model_1.ini
         epochs=model_conf['epochs']           # (10), from model_1.ini
     )
-    net.save()          # saves the model as a .h5 file.
+    net.save(model_name)          # saves the model as a .h5 file.
