@@ -50,40 +50,42 @@ def model(load, shape, classes_num = NUM_CLASSES, tr_model=None):             # 
     )
     return model
 
-def get_X_y(data_set):
+def get_X_y(csv_file, cam_num):
     '''
     Read the csv files and generate X/y pairs.
     '''
     # Added from older code base
     """Read the log file and turn it into X/y pairs. Add an offset to left images, remove from right images."""
     X, y = [], []
-    data_file = os.path.join(data_set, os.path.basename(data_set)) + ".csv"
+    #ata_file = os.path.join(data_set, os.path.basename(data_set)) + ".csv"
 
-    with open(data_file) as fin:
+    with open(csv_file) as fin:
         reader = csv.reader(fin)
         next(reader, None)
         for img1, img2, command in reader:
-            _to_be_added1 = os.path.join(data_set, "1")
-            _to_be_added1 = os.path.join(_to_be_added1, img1)
-            _to_be_added2 = os.path.join(data_set, "2")
-            _to_be_added2 = os.path.join(_to_be_added2, img2)
-            if not os.path.exists(_to_be_added1):
-                print("Image %s does not exist", _to_be_added1)
+            if os.path.basename(cam_num) == '1':
+                _to_be_added = cam_num
+                _to_be_added = os.path.join(_to_be_added, img1)
+            else:
+                _to_be_added = cam_num
+                _to_be_added = os.path.join(_to_be_added, img2)
+            if not os.path.exists(_to_be_added):
+                print("Image %s does not exist", _to_be_added)
                 sys.exit(1)
-            if not os.path.exists(_to_be_added2):
-                print("Image %s does not exist", _to_be_added2)
-                sys.exit(1)
-            X.append([_to_be_added1, _to_be_added2])
+            #if not os.path.exists(_to_be_added2):
+                #print("Image %s does not exist", _to_be_added2)
+                #sys.exit(1)
+            X.append(_to_be_added)
             y.append(int(command))
     return X, to_categorical(y, num_classes=NUM_CLASSES)
     # ____________________________________________________
 
-def load_image(paths):
+def load_image(path):
     """Process and augment an image."""
-    print("Loading %s", paths)
+    print("Loading : " + path)
     shape=[model_conf['shape'][0],model_conf['shape'][1]]
     #print(shape)
-    image = load_img(paths[0])
+    image = load_img(path)
     #tmp = image.size
     #print(image.size)
     #print(0, tmp[1] // 3, tmp[0], tmp[1])
@@ -92,7 +94,7 @@ def load_image(paths):
     aimage = img_to_array(image)
     aimage = aimage.astype(np.float32) / 255.
     aimage = aimage - 0.5
-    print(aimage.shape)
+    #print(aimage.shape)
     return aimage
 
 
@@ -116,20 +118,20 @@ def _generator(batch_size, classes, X, y):
         yield np.array(batch_X), np.array(batch_y)
  # ____________________________________________________
 
-def train(model_name=None, data_set=None, is_new_model=False):
+def train(csv_file, model_name=None, cam_num=None, is_new_model=False):
     '''
     Load the network and data, fit the model, save it
     '''
     print("Starting train!")
 
     if not is_new_model:                                   # if a model was entered, load it
-        print("Model entered!")
+        print("Using model!")
         net = model(load=True, shape=model_conf['shape'], tr_model=model_name)
     else:                                       # otherwise create a new model
-        print("No model entered")
+        print("Generating model!")
         net = model(load=False, shape=model_conf['shape'], tr_model=model_name)
     net.summary()                               # prints a summary representation of the model
-    X, y, = get_X_y(data_set)                   # give list of files
+    X, y, = get_X_y(csv_file, cam_num)                   # give list of files
     Xtr, Xval, ytr, yval = train_test_split(    # test_train_split: returns list containing train-test split of inputs
                                 X, y,
                                 test_size=model_conf['val_split'],            # val_split = 0.15 from model_1.ini
@@ -147,9 +149,9 @@ def train(model_name=None, data_set=None, is_new_model=False):
                 val_classes[j].append(i)
     tmp1= _generator(model_conf['batch'], tr_classes, Xtr, ytr)
     tmp4 = tmp1.next()
-    print("tmp1 : len %i", len(tmp4))
-    print(tmp4[0].shape)
-    print(tmp4[1].shape)
+    #print("tmp1 : len %i", len(tmp4))
+    #print(tmp4[0].shape)
+    #print(tmp4[1].shape)
     tmp2= _generator(model_conf['batch'], val_classes, Xval, yval)
     #print("tmp2 : %s", tmp2.shape)
     #print(tmp2.next().shape)
