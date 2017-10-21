@@ -27,7 +27,6 @@ if __name__ == '__main__':
         default=None,
         help='Path to model h5 file. Model should be on the same path.',
     )
-
     args = parser.parse_args()
     print("Parsing arguments!")
     print("Set name = " + args.data_set)

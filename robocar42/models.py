@@ -50,7 +50,7 @@ def model(load, shape, classes_num = NUM_CLASSES, tr_model=None):             # 
     )
     return model
 
-def get_X_y(data_set, cam_num):
+def get_X_y(data_set):
     '''
     Read the csv files and generate X/y pairs.
     '''
@@ -63,34 +63,36 @@ def get_X_y(data_set, cam_num):
         reader = csv.reader(fin)
         next(reader, None)
         for img1, img2, command in reader:
-            if cam_num == "1":
-                img=img1
-            elif cam_num == "2":
-                img=img2
-            else:
-                print("Expected 1 or 2 got %s", cam_num)
+            _to_be_added1 = os.path.join(data_set, "1")
+            _to_be_added1 = os.path.join(_to_be_added1, img1)
+            _to_be_added2 = os.path.join(data_set, "2")
+            _to_be_added2 = os.path.join(_to_be_added2, img2)
+            if not os.path.exists(_to_be_added1):
+                print("Image %s does not exist", _to_be_added1)
                 sys.exit(1)
-            _to_be_added = os.path.join(data_set, cam_num)
-            _to_be_added= os.path.join(_to_be_added, img)
-            if not os.path.exists(_to_be_added):
-                print("Image %s does not exist", _to_be_added)
+            if not os.path.exists(_to_be_added2):
+                print("Image %s does not exist", _to_be_added2)
                 sys.exit(1)
-            X.append(_to_be_added)
+            X.append([_to_be_added1, _to_be_added2])
             y.append(int(command))
     return X, to_categorical(y, num_classes=NUM_CLASSES)
     # ____________________________________________________
 
-def load_image(path):
+def load_image(paths):
     """Process and augment an image."""
+    print("Loading %s", paths)
     shape=[model_conf['shape'][0],model_conf['shape'][1]]
     #print(shape)
-    image = load_img(path)
+    image = load_img(paths[0])
+    #tmp = image.size
     #print(image.size)
-    #image = image.crop((0, shape[1] // 3, shape[0], shape[1]))
+    #print(0, tmp[1] // 3, tmp[0], tmp[1])
+    #image = image.crop((0, tmp[1] // 3, tmp[0], tmp[1]))
+    #print("Cropped = %s", image.size)
     aimage = img_to_array(image)
     aimage = aimage.astype(np.float32) / 255.
     aimage = aimage - 0.5
-    #print(aimage.shape)
+    print(aimage.shape)
     return aimage
 
 
@@ -127,7 +129,7 @@ def train(model_name=None, data_set=None, is_new_model=False):
         print("No model entered")
         net = model(load=False, shape=model_conf['shape'], tr_model=model_name)
     net.summary()                               # prints a summary representation of the model
-    X, y, = get_X_y(data_set, "1")                   # give list of files
+    X, y, = get_X_y(data_set)                   # give list of files
     Xtr, Xval, ytr, yval = train_test_split(    # test_train_split: returns list containing train-test split of inputs
                                 X, y,
                                 test_size=model_conf['val_split'],            # val_split = 0.15 from model_1.ini
