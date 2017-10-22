@@ -111,12 +111,9 @@ def prep_image(images):                     # takes a set of images
     print("Swapping axes camera images!")
     images[0] = np.swapaxes(images[0], 1, 0)        #whaaaaa????
     images[1] = np.swapaxes(images[1], 1, 0)
-    #aimage = np.concatenate(tuple(images), axis=1)  # concatenates the images along axis 1
-    #aimage = cv2.resize(aimage,
-    #            disp_conf['sdshape'],
-    #            interpolation=cv2.INTER_AREA)       #resizes the image
-    #aimage = aimage / 255.
-    #aimage = aimage - 0.5
+    images[0]=models.process_image(images[0])
+    images[1] = models.process_image(images[1])
+
     return images
 
 #todo: takes single image from camera and feeds it into appropriate model and agrregates the resutls

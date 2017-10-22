@@ -86,6 +86,11 @@ def load_image(path):
     shape=[model_conf['shape'][0],model_conf['shape'][1]]
     #print(shape)
     image = load_img(path)
+
+    return aimage
+
+def process_image(image):
+    """Process and augment an image."""
     #tmp = image.size
     #print(image.size)
     #print(0, tmp[1] // 3, tmp[0], tmp[1])
@@ -96,7 +101,6 @@ def load_image(path):
     aimage = aimage - 0.5
     #print(aimage.shape)
     return aimage
-
 
 def _generator(batch_size, classes, X, y):
     '''
