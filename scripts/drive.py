@@ -102,15 +102,21 @@ def concantenate_image(images):                     # takes a set of images
     aimage = aimage / 255.
     aimage = aimage - 0.5
     return aimage
-
+#todo: takes single image from camera and feeds it into appropriate model and agrregates the resutls
 def auto_drive(images):                                         # takes a set of images
     print ("Autopilot engaged!")
     if images:                                                  # if there are images...
-        prec_image = concantenate_image(images)                 # returns a concatonated and resized image
-        pred_act = model.predict(np.array([prec_image]))[0]     # creates an array based on prec_image
-        logger.info("Lft: %.2f | Fwd: %.2f | Rht: %.2f | Rev: %.2f" %
-            (pred_act[1], pred_act[0], pred_act[2], pred_act[3]))   # logs the percentage of each action
-        act_i = np.argmax(pred_act)                             # returns the index of the maximum values in pred_act
+        #prec_image = concantenate_image(images)                 # returns a concatonated and resized image
+        pred_act1 = model1.predict(np.array([images[0]]))[0]  # creates an array based on prec_image
+        pred_act2 = model2.predict(np.array([images[1]]))[0]  # creates an array based on prec_image
+        #print("Actions #1: %s ** #2: %s", pred_act1, pred_act2)
+        logger.info("Model 1: Lft: %.2f | Fwd: %.2f | Rht: %.2f | Rev: %.2f" %
+            (pred_act1[1], pred_act1[0], pred_act1[2], pred_act1[3]))   # logs the percentage of each action
+        logger.info("Model 2:Lft: %.2f | Fwd: %.2f | Rht: %.2f | Rev: %.2f" %
+            (pred_act2[1], pred_act2[0], pred_act2[2], pred_act2[3]))
+        tmp =[sum(x) for x in zip(pred_act1, pred_act2)]
+        act_i = (np.argmax(tmp)) / 2
+        print("Aggregated action: %s", act_i)
         action = act_i if (pred_act[act_i] >= conf_level) else rev_action   # sets the action if it is 30+% confident
         if act_i < len(links):
             rc_car.drive(conv_to_vec(links[action]))            # converts the action to a vector, then executes the action
@@ -226,9 +232,13 @@ def build_parser():
         default=False,                                  # default off
         help='Teach on/off. Default: off')
     parser.add_argument(
-        '-model',                                       # specify behavioural model
+        '-model1',                                       # specify behavioural model
         type=str,
-        help='Specify model to use for auto drive')
+        help='Specify model1 to use for auto drive')
+    parser.add_argument(
+        '-model2',                                       # specify behavioural model
+        type=str,
+        help='Specify model2 to use for auto drive')
     parser.add_argument(
         '-train',                                       # specify the name of the training set
         type=str,
@@ -277,9 +287,13 @@ if __name__ == '__main__':
             print directory
             os.makedirs(directory)
 
-        model = models.model(True, model_conf['shape'],     # sets convolutional model
+        model1 = models.model(True, model_conf['shape'], # sets convolutional model
                     NUM_CLASSES,                        # NUM_CLASSES = 4 (set at beginning of file)
-                    args.model)                         # adds the model input
+                    args.model1)                         # adds the model input
+        #todo: add second conv model
+        model2 = models.model(True, model_conf['shape'], # sets convolutional model
+                    NUM_CLASSES,                        # NUM_CLASSES = 4 (set at beginning of file)
+                    args.model2)                         # adds the model input
         rc_car.start()                                  # tells car to start but not move (TODO? if statement error?)
         disp = Display('main', disp_conf, ['camera_1.ini', 'camera_2.ini']) # sets disp to Display(robocar42/display.py)
         atexit.register(cleanup, disp)                          # upon close, runs cleanup w/ the arg (disp), closing the display
