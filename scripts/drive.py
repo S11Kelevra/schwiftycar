@@ -102,22 +102,43 @@ def concantenate_image(images):                     # takes a set of images
     aimage = aimage / 255.
     aimage = aimage - 0.5
     return aimage
+
+
+def prep_image(images):                     # takes a set of images
+    '''
+    Processes images and return normalized/combined single image
+    '''
+    print("Swapping axes camera images!")
+    images[0] = np.swapaxes(images[0], 1, 0)        #whaaaaa????
+    images[1] = np.swapaxes(images[1], 1, 0)
+    #aimage = np.concatenate(tuple(images), axis=1)  # concatenates the images along axis 1
+    #aimage = cv2.resize(aimage,
+    #            disp_conf['sdshape'],
+    #            interpolation=cv2.INTER_AREA)       #resizes the image
+    #aimage = aimage / 255.
+    #aimage = aimage - 0.5
+    return images
+
 #todo: takes single image from camera and feeds it into appropriate model and agrregates the resutls
 def auto_drive(images):                                         # takes a set of images
     print ("Autopilot engaged!")
     if images:                                                  # if there are images...
-        #prec_image = concantenate_image(images)                 # returns a concatonated and resized image
+        images = prep_image(images)                 # returns a concatonated and resized image
         pred_act1 = model1.predict(np.array([images[0]]))[0]  # creates an array based on prec_image
         pred_act2 = model2.predict(np.array([images[1]]))[0]  # creates an array based on prec_image
         #print("Actions #1: %s ** #2: %s", pred_act1, pred_act2)
         logger.info("Model 1: Lft: %.2f | Fwd: %.2f | Rht: %.2f | Rev: %.2f" %
             (pred_act1[1], pred_act1[0], pred_act1[2], pred_act1[3]))   # logs the percentage of each action
-        logger.info("Model 2:Lft: %.2f | Fwd: %.2f | Rht: %.2f | Rev: %.2f" %
+        logger.info("Model 2: Lft: %.2f | Fwd: %.2f | Rht: %.2f | Rev: %.2f" %
             (pred_act2[1], pred_act2[0], pred_act2[2], pred_act2[3]))
-        tmp =[sum(x) for x in zip(pred_act1, pred_act2)]
-        act_i = (np.argmax(tmp)) / 2
-        print("Aggregated action: %s", act_i)
-        action = act_i if (pred_act[act_i] >= conf_level) else rev_action   # sets the action if it is 30+% confident
+        #print("Model 1: ", pred_act1)
+        #print("Model 2: ", pred_act2)
+        pred_sum =[sum(x) for x in zip(pred_act1, pred_act2)]
+        print("Max of sum:", np.argmax(pred_sum))
+        act_i = np.argmax(pred_sum)
+        print("Temp : ", pred_sum)
+        print("Aggregated action: ", act_i)
+        action = act_i if (pred_sum[act_i] >= conf_level) else rev_action   # sets the action if it is 30+% confident
         if act_i < len(links):
             rc_car.drive(conv_to_vec(links[action]))            # converts the action to a vector, then executes the action
         return action, True
