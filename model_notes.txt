@@ -1,0 +1,29 @@
+Practice2++:
+	Combination of several data sets, each consisting of 3 laps with one lap or reversing.
+	Trained 10-20 epochs 10-20 steps.
+	Cam1 Final: loss: 0.1099 - acc: 0.9703 - val_loss: 0.0430 - val_acc: 0.9927
+	cam2 Final: Unknown
+	Pretty good model, tends to favor the inside line and caut corners a bit. Good at reversing twice before attempting to turn.
+
+P0v0:
+	Three laps and one lap reverse data.
+	Trained 20 epochs 20 steps.
+	Cam 1 Final: loss: 0.1350 - acc: 0.9617 - val_loss: 0.0396 - val_acc: 0.9894 
+	Cam 2 Final: loss: 0.2236 - acc: 0.9289 - val_loss: 0.1209 - val_acc: 0.9700
+	Favors left hand turns too much.
+
+P0v1:
+	retrained P0v0 data_set with practice2++ model
+	Trained 20 epochs 20 steps.
+	Cam 1 Final:
+	Cam 2 Final:
+
+Corners:
+	Small data set of the three hard turns on the track as well as some reversing data.
+	No model made, used for retraining existing models.
+
+Practice++corners:
+	Practice2++ model retrained with corners data set.
+	Trained 20 epochs with 20 steps.
+	Cam 1 Final:
+	Cam 2 Final:
