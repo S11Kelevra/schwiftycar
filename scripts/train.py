@@ -54,18 +54,18 @@ if __name__ == '__main__':
     if not os.path.exists(csv_file):
         print("No csv file at %s", csv_file)
         exit()
-    model_name = os.path.join(config.model_path, args.model_name) + '_camera_' + os.path.basename(args.cam_num) + '.h5'
-    if not os.path.exists(model_name):
-        print("Making model name")
-        print("Model name = " + model_name)
+    model_name = os.path.join(config.model_path, args.model_name)
+    if os.path.exists(model_name):
+        print("Existing model name = " + model_name)
         print("Image folder =" + cam_num)
         models.train(csv_file, model_name, cam_num, is_new_model=True)
     else:
-        model_name = os.path.join(config.model_path, args.model_name)
+        #model_name = os.path.join(config.model_path, args.model_name)
         #if not os.path.exists(model_name):
             #print("H5 file does not exist!")
             #exit()
-        print("Model name = " + model_name)
+        model_name = os.path.join(config.model_path, args.model_name) + '_camera_' + os.path.basename(args.cam_num) + '.h5'
+        print("New model name = " + model_name)
         print("Data set =" + cam_num)
         models.train(model_name, cam_num)
     exit()

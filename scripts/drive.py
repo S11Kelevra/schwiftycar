@@ -26,7 +26,7 @@ from robocar42.display import Display
 logger = util.configure_log('drive')
 
 NUM_CLASSES = 4
-delta_time = 1000
+delta_time = 750
 conf_level = 0.3
 
 rc_car = Car(config.vehicle_parser_config('vehicle.ini'))       # parses values from vehicle.ini into an object Car

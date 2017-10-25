@@ -80,15 +80,6 @@ def get_X_y(csv_file, cam_num):
     return X, to_categorical(y, num_classes=NUM_CLASSES)
     # ____________________________________________________
 
-def load_image(path):
-    """Process and augment an image."""
-    print("Loading : " + path)
-    shape=[model_conf['shape'][0],model_conf['shape'][1]]
-    #print(shape)
-    image = load_img(path)
-
-    return aimage
-
 def process_image(image):
     """Process and augment an image."""
     #tmp = image.size
@@ -101,6 +92,15 @@ def process_image(image):
     aimage = aimage - 0.5
     #print(aimage.shape)
     return aimage
+
+def load_image(path):
+    """Process and augment an image."""
+    #print("Loading : " + path)
+    shape=[model_conf['shape'][0],model_conf['shape'][1]]
+    #print(shape)
+    image = load_img(path)
+
+    return process_image(image)
 
 def _generator(batch_size, classes, X, y):
     '''
@@ -128,7 +128,7 @@ def train(csv_file, model_name=None, cam_num=None, is_new_model=False):
     '''
     print("Starting train!")
 
-    if not is_new_model:                                   # if a model was entered, load it
+    if is_new_model == False:                                   # if a model was entered, load it
         print("Using model!")
         net = model(load=True, shape=model_conf['shape'], tr_model=model_name)
     else:                                       # otherwise create a new model
