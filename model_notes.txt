@@ -15,8 +15,10 @@ P0v0:
 P0v1:
 	retrained P0v0 data_set with practice2++ model
 	Trained 20 epochs 20 steps.
-	Cam 1 Final:
-	Cam 2 Final:
+	Cam 1 Final: loss: 0.0754 - acc: 0.9828 - val_loss: 0.0161 - val_acc: 0.9944
+	Cam 2 Final: loss: 0.0948 - acc: 0.9727 - val_loss: 0.0598 - val_acc: 0.9850
+	Slightly better than its predecessor, still favoring the inside line but completed 2/5 laps with only
+	the rear tires crossing. Fairly high accuracy (albiet slow) when exp date it set too 100ms.
 
 Corners:
 	Small data set of the three hard turns on the track as well as some reversing data.
