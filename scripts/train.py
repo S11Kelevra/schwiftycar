@@ -58,7 +58,7 @@ if __name__ == '__main__':
     if os.path.exists(model_name):
         print("Existing model name = " + model_name)
         print("Image folder =" + cam_num)
-        models.train(csv_file, model_name, cam_num, is_new_model=True)
+        models.train(csv_file, model_name, cam_num)
     else:
         #model_name = os.path.join(config.model_path, args.model_name)
         #if not os.path.exists(model_name):
@@ -67,5 +67,5 @@ if __name__ == '__main__':
         model_name = os.path.join(config.model_path, args.model_name) + '_camera_' + os.path.basename(args.cam_num) + '.h5'
         print("New model name = " + model_name)
         print("Data set =" + cam_num)
-        models.train(model_name, cam_num)
+        models.train(csv_file, model_name, cam_num, is_new_model=True)
     exit()
