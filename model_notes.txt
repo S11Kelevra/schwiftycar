@@ -25,5 +25,6 @@ Corners:
 Practice++corners:
 	Practice2++ model retrained with corners data set.
 	Trained 20 epochs with 20 steps.
-	Cam 1 Final:
-	Cam 2 Final:
+	Cam 1 Final: loss: 0.1617 - acc: 0.9516 - val_loss: 0.0302 - val_acc: 0.9902
+	Cam 2 Final: Unkown
+	Really bad. Perhaps retraining with full laps favoring the outside line instead?
