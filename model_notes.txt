@@ -19,10 +19,22 @@ P0v1:
 	Cam 2 Final: loss: 0.0948 - acc: 0.9727 - val_loss: 0.0598 - val_acc: 0.9850
 	Slightly better than its predecessor, still favoring the inside line but completed 2/5 laps with only
 	the rear tires crossing. Fairly high accuracy (albiet slow) when exp date it set too 100ms.
+	Toss up between v0 for best model so far.
+P0v2:
+	retrained v1 with the outer data set.
+	Trained 20 epochs 20 steps.
+	Cam 1 Final:
+	Cam 2 Final: loss: 0.0316 - acc: 0.9914 - val_loss: 8.5767e-04 - val_acc: 1.0000 (something wrong here)
+	Not so great. Definetly moving away from the inner line but it seems to be a little over sensitive.
+	Perhaps placing car well over the inside line before taking another outerset would work?
+	
 
 Corners:
 	Small data set of the three hard turns on the track as well as some reversing data.
 	No model made, used for retraining existing models.
+Ouuter:
+	Small data set of car physcally held and moved on the inside lane while inputing right turn.
+	No model made, hopfull with help car move to the center of the lane.
 
 Practice++corners:
 	Practice2++ model retrained with corners data set.
