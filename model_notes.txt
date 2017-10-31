@@ -28,6 +28,14 @@ P0v2:
 	Not so great. Definetly moving away from the inner line but it seems to be a little over sensitive.
 	Perhaps placing car well over the inside line before taking another outerset would work?
 	
+P0v3:
+	Retrained P0v1 with data set of two laps favoring the outside line and one reverse.
+	10-30-2017 @ 5:30pm.
+	Trained 20 epochs 20 steps.
+	Cam 1 Final: loss: 0.1263 - acc: 0.9672 - val_loss: 0.0552 - val_acc: 0.9810
+	Cam 2 Final: lloss: 0.1654 - acc: 0.9555 - val_loss: 0.1372 - val_acc: 0.9538
+	Pretty good model. Completing most laps without crossing the lines, has trouble backing out.
+	ran at 8:30 and did not do as well.
 
 Corners:
 	Small data set of the three hard turns on the track as well as some reversing data.
