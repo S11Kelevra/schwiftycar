@@ -85,4 +85,4 @@ tensorflow==1.2.0
 Theano==0.9.0
 uritemplate==3.0.0
 urllib3==1.21.1
-Werkzeug==0.12.2
+Werkzeug==0.15.3
