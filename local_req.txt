@@ -27,7 +27,7 @@ olefile==0.44
 opencv-python==3.3.0.9
 pandas==0.20.2
 pbr==3.1.1
-Pillow==4.2.1
+Pillow==8.3.2
 ply==3.8
 protobuf==3.3.0
 pyasn1==0.2.3
