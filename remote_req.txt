@@ -56,7 +56,7 @@ idna==2.5
 Keras==2.0.5
 Markdown==2.2.0
 mock==2.0.0
-numpy==1.13.0
+numpy==1.22.0
 oauth2client==3.0.0
 pandas==0.20.2
 pbr==3.1.1
